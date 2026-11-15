@@ -42,14 +42,15 @@
 
     <h2 class="page-title">Daftar Buku</h2>
 
+    {{-- A1 ditambal: memakai {{ }} (escaping otomatis) --}}
     <div class="table-wrap" style="padding:1rem;margin-bottom:1rem">
-    <strong>Judul Terbaru (dirender server)</strong>
-    <ul>
-        @foreach ($daftarJudul as $b)
-            <li>{!! $b->judul !!}</li>
-        @endforeach
-    </ul>
-</div>
+        <strong>Judul Terbaru (dirender server)</strong>
+        <ul>
+            @foreach ($daftarJudul as $b)
+                <li>{{ $b->judul }}</li>
+            @endforeach
+        </ul>
+    </div>
 
     {{-- Pesan sukses / gagal --}}
     <div id="pesan" class="alert" role="alert" hidden></div>
@@ -125,6 +126,15 @@
     </div>
 
     
+    {{-- Template tombol Hapus: form DELETE dengan @csrf dan @method --}}
+    <template id="tpl-hapus">
+        <form method="POST" action="" style="display:inline">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+        </form>
+    </template>
+
     <script>
         const API_BUKU = '/api/buku';
         const CSRF = document.querySelector('meta[name="csrf-token"]').content;
@@ -285,15 +295,15 @@
                 btnUbah.textContent = 'Ubah';
                 btnUbah.addEventListener('click', function () { mulaiUbah(buku); });
 
-                const btnHapus = document.createElement('button');
-                btnHapus.type = 'button';
-                btnHapus.className = 'btn btn-sm btn-danger';
-                btnHapus.textContent = 'Hapus';
-                btnHapus.addEventListener('click', function () { hapusBuku(buku); });
+                const formHapus = document.getElementById('tpl-hapus').content.firstElementChild.cloneNode(true);
+                formHapus.action = '/buku/' + buku.id;
+                formHapus.addEventListener('submit', function (e) {
+                    if (!confirm('Yakin ingin menghapus buku "' + buku.judul + '"?')) e.preventDefault();
+                });
 
                 if (BISA_KELOLA) {
                     tdAksi.appendChild(btnUbah);
-                    tdAksi.appendChild(btnHapus);
+                    tdAksi.appendChild(formHapus);
                 }
 
                 if (BISA_PINJAM) {

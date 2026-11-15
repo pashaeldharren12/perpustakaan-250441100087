@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 use App\Models\Buku;
 use App\Models\Kategori;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Controller WEB (halaman /buku dan /buku/{id}).
@@ -26,13 +27,13 @@ class BukuController extends Controller
         ];
     }
 
-  public function index()
-{
-    $kategoris   = Kategori::orderBy('nama')->get(['id', 'nama']);
-    $daftarJudul = Buku::orderByDesc('id')->limit(10)->get(['id', 'judul']);
+    public function index()
+    {
+        $kategoris   = Kategori::orderBy('nama')->get(['id', 'nama']);
+        $daftarJudul = Buku::orderByDesc('id')->limit(10)->get(['id', 'judul']);
 
-    return view('buku.index', compact('kategoris', 'daftarJudul'));
-}
+        return view('buku.index', compact('kategoris', 'daftarJudul'));
+    }
 
     public function show(string $id)
     {
@@ -42,11 +43,27 @@ class BukuController extends Controller
         return response()->view('buku.show', ['buku' => $buku], $buku ? 200 : 404);
     }
 
+    // A2 ditambal: query memakai binding (placeholder ?)
     public function cari(Request $request)
-{
-    $judul = $request->query('judul');
-    $hasil = DB::select("SELECT * FROM bukus WHERE judul = '$judul'");
+    {
+        $judul = $request->query('judul');
+        $hasil = DB::select('SELECT * FROM bukus WHERE judul = ?', [$judul]);
 
-    return response()->json($hasil);
-}
+        return response()->json($hasil);
+    }
+
+    // A3 ditambal: penghapusan lewat DELETE + token CSRF
+    public function destroy(string $id)
+    {
+        $buku = Buku::withCount('peminjamans')->findOrFail($id);
+
+        if ($buku->peminjamans_count > 0) {
+            return redirect()->route('buku.index')
+                ->with('error', 'Buku tidak dapat dihapus karena masih memiliki riwayat peminjaman.');
+        }
+
+        $buku->delete();
+
+        return redirect()->route('buku.index')->with('success', 'Buku berhasil dihapus.');
+    }
 }

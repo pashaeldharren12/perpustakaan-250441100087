@@ -21,10 +21,12 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
 
-    // ===== CELAH MODUL 6 =====
-    Route::get('/buku-cari', [BukuController::class, 'cari'])->name('buku.cari');                                         // A2: SQL Injection
-    Route::get('/buku/{buku}/hapus', [\App\Http\Controllers\Api\BukuController::class, 'destroy'])->name('buku.hapus'); // A3: CSRF lewat GET
-    // ==========================
+    // Modul 6: pencarian buku (A2 sudah memakai binding)
+    Route::get('/buku-cari', [BukuController::class, 'cari'])->name('buku.cari');
+
+    // Modul 6: penghapusan buku lewat DELETE (A3 ditambal; route GET /buku/{buku}/hapus dihapus)
+    Route::delete('/buku/{id}', [BukuController::class, 'destroy'])
+        ->middleware('permission:kelola-data-buku')->name('buku.destroy');
 
     // Dashboard
     Route::get('/admin/dashboard', fn () => view('admin.dashboard'))
