@@ -24,9 +24,11 @@ Route::middleware('auth')->group(function () {
     // Modul 6: pencarian buku (A2 sudah memakai binding)
     Route::get('/buku-cari', [BukuController::class, 'cari'])->name('buku.cari');
 
-    // Modul 6: penghapusan buku lewat DELETE (A3 ditambal; route GET /buku/{buku}/hapus dihapus)
-    Route::delete('/buku/{id}', [BukuController::class, 'destroy'])
-        ->middleware('permission:kelola-data-buku')->name('buku.destroy');
+    // Modul 6: tambah dan hapus buku dijaga Gate kelola-buku (harus sebelum /buku/{id})
+    Route::middleware('can:kelola-buku')->group(function () {
+        Route::get('/buku/create', [BukuController::class, 'create'])->name('buku.create');
+        Route::delete('/buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
+    });
 
     // Dashboard
     Route::get('/admin/dashboard', fn () => view('admin.dashboard'))

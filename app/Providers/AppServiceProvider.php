@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Gate pusat untuk pengelolaan buku: hanya admin dan petugas
+        Gate::define('kelola-buku', function (User $user) {
+            return $user->hasAnyRole(['admin', 'petugas']);
+        });
     }
 }

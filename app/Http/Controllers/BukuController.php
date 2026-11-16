@@ -66,4 +66,10 @@ class BukuController extends Controller
 
         return redirect()->route('buku.index')->with('success', 'Buku berhasil dihapus.');
     }
+
+    // Halaman form tambah buku (form ada di halaman daftar buku)
+    public function create()
+    {
+        return $this->index();
+    }
 }

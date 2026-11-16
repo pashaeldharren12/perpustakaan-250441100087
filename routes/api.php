@@ -13,14 +13,14 @@ Route::get('/user', function (Request $request) {
  * MODUL 5: route API dibungkus group 'web' (session + CSRF) + auth + permission,
  * sehingga halaman /buku (Fetch API) memakai sesi login yang sama.
  * - Baca (index, show)           : permission lihat-daftar-buku  (semua role)
- * - Tulis (store, update, destroy): permission kelola-data-buku   (admin, petugas)
+ * - Tulis (store, update, destroy): Gate can:kelola-buku         (admin, petugas)
  * Nama route api.buku.* dipertahankan.
  */
 Route::middleware(['web', 'auth', 'permission:lihat-daftar-buku'])->group(function () {
     Route::apiResource('buku', BukuController::class)->only(['index', 'show'])->names('api.buku');
 });
 
-Route::middleware(['web', 'auth', 'permission:kelola-data-buku'])->group(function () {
+Route::middleware(['web', 'auth', 'can:kelola-buku'])->group(function () {
     Route::apiResource('buku', BukuController::class)->only(['store', 'update', 'destroy'])->names('api.buku');
 });
 

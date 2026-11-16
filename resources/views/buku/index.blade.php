@@ -42,6 +42,10 @@
 
     <h2 class="page-title">Daftar Buku</h2>
 
+    @can('kelola-buku')
+        <a href="{{ route('buku.create') }}" class="btn">+ Tambah Buku</a>
+    @endcan
+
     {{-- A1 ditambal: memakai {{ }} (escaping otomatis) --}}
     <div class="table-wrap" style="padding:1rem;margin-bottom:1rem">
         <strong>Judul Terbaru (dirender server)</strong>
@@ -56,7 +60,7 @@
     <div id="pesan" class="alert" role="alert" hidden></div>
 
     {{-- Formulir tambah / ubah: hanya untuk yang berhak kelola buku --}}
-    @can('kelola-data-buku')
+    @can('kelola-buku')
     <section class="form-card">
         <h3 id="form-judul">Tambah Buku</h3>
 
@@ -138,7 +142,7 @@
     <script>
         const API_BUKU = '/api/buku';
         const CSRF = document.querySelector('meta[name="csrf-token"]').content;
-        const BISA_KELOLA = @json(auth()->user()->can('kelola-data-buku'));
+        const BISA_KELOLA = @json(auth()->user()->can('kelola-buku'));
         const BISA_PINJAM = @json(auth()->user()->can('mengajukan-peminjaman-buku'));
         const URL_DETAIL = '/buku/';
 
