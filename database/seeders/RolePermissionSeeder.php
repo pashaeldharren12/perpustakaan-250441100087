@@ -46,17 +46,16 @@ class RolePermissionSeeder extends Seeder
             }
         }
 
-        // Akun awal (role hanya bisa ditetapkan lewat seeder / halaman admin)
         $accounts = [
-            ['Admin Perpustakaan',   'admin@perpus.test',   'admin'],
-            ['Petugas Perpustakaan', 'petugas@perpus.test', 'petugas'],
-            ['Siswa Contoh',         'siswa@perpus.test',   'siswa'],
-        ];
-        foreach ($accounts as [$name, $email, $role]) {
-            User::firstOrCreate(
-                ['email' => $email],
-                ['name' => $name, 'password' => Hash::make('password')]
-            )->syncRoles($role);
-        }
+    ['Admin Perpustakaan',   'admin@perpus.test',   'admin',   env('ADMIN_PASSWORD') ?? throw new \RuntimeException('Isi ADMIN_PASSWORD di file .env')],
+    ['Petugas Perpustakaan', 'petugas@perpus.test', 'petugas', 'password'],
+    ['Siswa Contoh',         'siswa@perpus.test',   'siswa',   'password'],
+];
+foreach ($accounts as [$name, $email, $role, $pass]) {
+    User::updateOrCreate(
+        ['email' => $email],
+        ['name' => $name, 'password' => Hash::make($pass)]
+    )->syncRoles($role);
+}
     }
 }
