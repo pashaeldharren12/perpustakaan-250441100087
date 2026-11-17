@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Peminjaman;
 use App\Models\User;
+use App\Policies\PeminjamanPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -25,5 +27,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('kelola-buku', function (User $user) {
             return $user->hasAnyRole(['admin', 'petugas']);
         });
+
+        // Policy pemilik data peminjaman (menutup IDOR)
+        Gate::policy(Peminjaman::class, PeminjamanPolicy::class);
     }
 }

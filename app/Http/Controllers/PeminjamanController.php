@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Anggota;
 use App\Models\Buku;
 use App\Models\Peminjaman;
+use Illuminate\Support\Facades\Gate;
 
 class PeminjamanController extends Controller
 {
@@ -52,10 +53,11 @@ class PeminjamanController extends Controller
     }
 
     // Detail: pemilik ATAU yang berhak mengelola peminjaman
-    // ===== CELAH A4 (Modul 6): IDOR, tanpa pemeriksaan pemilik =====
+    // A4 ditambal: otorisasi lewat PeminjamanPolicy
     public function show(string $id)
     {
         $peminjaman = Peminjaman::findOrFail($id);
+        Gate::authorize('view', $peminjaman);
 
         return view('peminjaman.show', ['peminjaman' => $peminjaman->load('buku', 'user')]);
     }
