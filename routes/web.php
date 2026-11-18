@@ -83,7 +83,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->middleware('permission:ubah-profil-sendiri')->name('profile.destroy');
 
-    Route::get('/uji-error', fn () => throw new \RuntimeException('Uji error NIM 250441100087'));
 });
 
 require __DIR__.'/auth.php';
