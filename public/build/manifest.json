@@ -1,11 +1,20 @@
 {
   "resources/css/app.css": {
-    "file": "assets/app-C47UnQuc.css",
+    "file": "assets/app-BPmesB-I.css",
     "name": "app",
     "names": [
       "app.css"
     ],
     "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/css/perpus.css": {
+    "file": "assets/perpus-DJXKd8-x.css",
+    "name": "perpus",
+    "names": [
+      "perpus.css"
+    ],
+    "src": "resources/css/perpus.css",
     "isEntry": true
   },
   "resources/js/app.js": {
