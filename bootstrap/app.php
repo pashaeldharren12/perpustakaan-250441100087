@@ -5,7 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -24,3 +24,16 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
     })->create();
+
+// Redirect storage ke /tmp saat berjalan di Vercel (karena serverless bersifat read-only)
+if (getenv('VERCEL') || isset($_SERVER['VERCEL']) || isset($_ENV['VERCEL'])) {
+    $app->useStoragePath('/tmp/storage');
+
+    foreach (['framework/views', 'framework/cache', 'framework/sessions', 'logs'] as $dir) {
+        if (!is_dir('/tmp/storage/' . $dir)) {
+            mkdir('/tmp/storage/' . $dir, 0755, true);
+        }
+    }
+}
+
+return $app;
