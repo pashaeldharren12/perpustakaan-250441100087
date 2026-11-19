@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\BukuResource;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBukuRequest;
 use App\Http\Requests\UpdateBukuRequest;
@@ -50,7 +51,7 @@ class BukuController extends Controller
 
         return response()->json([
             'message' => 'Daftar buku berhasil diambil',
-            'data'    => $bukus->items(),
+            'data'    => BukuResource::collection($bukus->items())->resolve(),
             'meta'    => [
                 'current_page' => $bukus->currentPage(),
                 'per_page'     => $bukus->perPage(),
@@ -78,7 +79,7 @@ class BukuController extends Controller
 
         return response()->json([
             'message' => 'Buku berhasil ditambahkan',
-            'data'    => $buku->load('kategori'),
+            'data'    => (new BukuResource($buku->load('kategori')))->resolve(),
         ], 201);
     }
 
@@ -97,7 +98,7 @@ class BukuController extends Controller
 
         return response()->json([
             'message' => 'Detail buku berhasil diambil',
-            'data'    => $buku,
+            'data'    => (new BukuResource($buku))->resolve(),
         ], 200);
     }
 
@@ -116,7 +117,7 @@ class BukuController extends Controller
 
         return response()->json([
             'message' => 'Buku berhasil diperbarui',
-            'data'    => $buku->fresh('kategori'),
+            'data'    => (new BukuResource($buku->fresh('kategori')))->resolve(),
         ], 200);
     }
 
