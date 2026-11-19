@@ -214,8 +214,9 @@
                 }
 
                 throw new ApiError(pesan, response.status, body && body.errors ? body.errors : null);
+            }
 
-                // BARU: respons sukses tapi bukan JSON
+            // Respons sukses tapi bukan JSON
             if (body === null) {
                 throw new ApiError('Respons server bukan JSON (HTTP ' + response.status + ').', response.status);
             }
